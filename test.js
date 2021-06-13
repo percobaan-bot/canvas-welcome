@@ -4,7 +4,7 @@ var a = new canvasWelcome('Hai');
 
 (async ()=>{
     a.setText("Siapa kamu")
-    a.setGroup("tess")
+    a.setGroup("Hanya itu?")
     a.setBoxStyle('yellow')
     var buff = await a.save()
     require('fs').writeFileSync('./tes.png', buff)

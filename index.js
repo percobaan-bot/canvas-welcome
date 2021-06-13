@@ -2,6 +2,17 @@ const { createCanvas, loadImage, registerFont, Image } = require('canvas');
 registerFont(__dirname+'/src/Dancing_Script/DancingScript-VariableFont_wght.ttf', {family : "DancingScript"})
 registerFont(__dirname+'/src/Do_Hyeon/DoHyeon-Regular.ttf', {family : "GroupText"})
 
+var fetchJSON = async (api, extra={})=>{
+    var fetch = require('node-fetch')
+    var buff = await fetch(api, extra)
+    try{
+        var json = await buff.json()
+    }catch(e){
+        var json = {}
+    }
+    return json
+}
+
 let mimetype = {
     png : 'image/png',
     jpg : 'image/jpg'
@@ -13,6 +24,12 @@ async function buatPhoto(text, group, avatar, background, mime, opt={}){
         canvas.height = 657;
     var ctx = canvas.getContext('2d')
     var ctxa = canvas.getContext('2d'); 
+    if(!background){
+        var photo_all = await fetchJSON("https://unsplash.com/napi/search?query=nature&per_page=100")
+        var photos = photo_all.photos.results
+        var photo = photos[Math.floor(Math.random()*photos.length)]
+        background = photo.urls.raw
+    }
     var {width=300, height=300} = canvas;
     var X = canvas.width / 2;
     var Y = canvas.height / 2;
@@ -20,7 +37,6 @@ async function buatPhoto(text, group, avatar, background, mime, opt={}){
     var img = await loadImage(background)
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
     var R = 45;
-
     //draw border apalah
     /*ctx.fillStyle = this.colorDiscriminatorBox;
     ctx.globalAlpha = this.opacityDiscriminatorBox;
@@ -54,8 +70,8 @@ async function buatPhoto(text, group, avatar, background, mime, opt={}){
 
 class canvasWelcome{
     constructor(text){
+        this.image = false
         this.text = text
-        this.image = "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8bmF0dXJlfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
         this.avatar = "https://i.ibb.co/GdXDDYT/upload-by-tembaksajabot.jpg"
         this.group= ""
         this.opts = {}
