@@ -41,14 +41,14 @@ async function buatPhoto(text, group, avatar, background, mime, opt={}){
     ctx.textAlign = "center"
     let textnama = {
         width : (canvas.width / 2),
-        height : (canvas.height / 2) + 115
+        height : (canvas.height / 2) + 119
     }
     ctx.fillText(text, textnama.width, textnama.height);
     ctx.font = 'bold 49px "DancingScript"'
     ctx.fillText(group,textnama.width, textnama.height+52) 
     ctx.globalAlpha = "0.4";
     ctx.fillStyle = opt.styeBox||"#F0FFFF"
-    ctx.fillRect(((canvas.width/2)/2)+72, (canvas.height/2)+67, 527, 65);
+    ctx.fillRect(((canvas.width/2)/2)+60, (canvas.height/2)+67, 567, 65);
     return canvas.toBuffer(mime)
   }
 
