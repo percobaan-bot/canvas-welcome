@@ -24,6 +24,9 @@ async function buatPhoto(text, group, avatar, background, mime, opt={}){
         canvas.height = 657;
     var ctx = canvas.getContext('2d')
     var ctxa = canvas.getContext('2d'); 
+    if(background == "default"){
+        background = __dirname+"/src/rose.jpg"
+    }
     if(!background){
         var photo_all = await fetchJSON("https://unsplash.com/napi/search?query=nature&per_page=100")
         var photos = photo_all.photos.results
@@ -35,6 +38,13 @@ async function buatPhoto(text, group, avatar, background, mime, opt={}){
     var Y = canvas.height / 2;
     var circle = await loadImage(avatar)
     var img = await loadImage(background)
+    var font_size = (canvas.width/2) / text.length;
+    if (font_size > 57){
+        font_size = 57
+    }
+	if (font_size < 33) {
+		font_size = 33;
+	}
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
     var R = 45;
     //draw border apalah
@@ -52,16 +62,32 @@ async function buatPhoto(text, group, avatar, background, mime, opt={}){
     ctxa.clip()
     ctxa.drawImage(circle, X-127, Y-185, 250, 250)
     ctxa.restore()
-    ctx.fillStyle = "white"
-    ctx.font = 'bold 60px "GroupText"'
+    ctx.fillStyle = opt.styleText||"white"
+    ctx.font = 'bold ' +font_size.toString()+ 'px "GroupText"'
     ctx.textAlign = "center"
     let textnama = {
         width : (canvas.width / 2),
-        height : (canvas.height / 2) + 119
+        height : (canvas.height / 2) + 120
     }
-    ctx.fillText(text, textnama.width, textnama.height);
-    ctx.font = 'bold 49px "DancingScript"'
-    ctx.fillText(group,textnama.width, textnama.height+52) 
+    var ini_bagi = text.length
+    if(text.length > 40){
+        ini_bagi = font_size
+    }
+    ctx.fillText(text, textnama.width, textnama.height - (ini_bagi/2));
+    ctx.font = 'bold 50px "DancingScript"'
+    ctx.fillStyle = opt.styleGroup||"white"
+    ctx.fillText(group,textnama.width, textnama.height+60)
+    if(opt.watermark){
+        ctx.fillStyle = "white"
+        var watermark = "©️"+(opt.watermark.text||"TaRianaBot")
+        ctx.font = "23px \"DancingScript\""
+        var tempat= {
+            width : canvas.width - (text.length*2)-100,
+            height : canvas.height - 20
+        }
+        //ctx.textAlign = "left"
+        ctx.fillText(watermark, tempat.width, tempat.height)
+    } 
     ctx.globalAlpha = "0.4";
     ctx.fillStyle = opt.styeBox||"#F0FFFF"
     ctx.fillRect(((canvas.width/2)/2)+60, (canvas.height/2)+67, 567, 65);
@@ -90,6 +116,11 @@ class canvasWelcome{
     }
     setBoxStyle(style){
         this.opts['styeBox'] = style
+    }
+    setWatermark(text){
+        this.opts['watermark'] = {
+            text : text||false
+        }
     }
     async save(mime){
         var type = mime||mimetype.png
