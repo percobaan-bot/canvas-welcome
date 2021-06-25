@@ -2,7 +2,7 @@ const { createCanvas, loadImage, registerFont, Image } = require('canvas');
 registerFont(__dirname+'/src/Dancing_Script/DancingScript-VariableFont_wght.ttf', {family : "DancingScript"})
 registerFont(__dirname+'/src/Do_Hyeon/DoHyeon-Regular.ttf', {family : "GroupText"})
 registerFont(__dirname+'/src/comic/comic.ttf', {family : "ComicSansMs"})
-registerFont(__dirname+"/src/modern/MOD20.ttf", {family : "forte"})
+registerFont(__dirname+"/src/modern/MOD20.TTF", {family : "forte"})
 
 Array.prototype.shuffle = function () {
     var a = this 
