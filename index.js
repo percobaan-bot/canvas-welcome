@@ -1,6 +1,18 @@
 const { createCanvas, loadImage, registerFont, Image } = require('canvas');
 registerFont(__dirname+'/src/Dancing_Script/DancingScript-VariableFont_wght.ttf', {family : "DancingScript"})
 registerFont(__dirname+'/src/Do_Hyeon/DoHyeon-Regular.ttf', {family : "GroupText"})
+registerFont(__dirname+'/src/comic/comic.ttf', {family : "ComicSansMs"})
+registerFont(__dirname+"/src/modern/MOD20.ttf", {family : "forte"})
+
+Array.prototype.shuffle = function () {
+    var a = this 
+    var j, x, i; 
+    for (i = a.length - 1; i > 0; i--) { 
+    j = Math.floor(Math.random() * (i + 1));
+    x = a[i]; a[i] = a[j]; a[j] = x; 
+    }
+    return a; 
+    }
 
 var fetchJSON = async (api, extra={})=>{
     var fetch = require('node-fetch')
@@ -28,22 +40,25 @@ async function buatPhoto(text, group, avatar, background, mime, opt={}){
         background = __dirname+"/src/rose.jpg"
     }
     if(!background){
-        var photo_all = await fetchJSON("https://unsplash.com/napi/search?query=nature&per_page=100")
-        var photos = photo_all.photos.results
+        var photos = require(__dirname+'/src/photo.json').shuffle()
         var photo = photos[Math.floor(Math.random()*photos.length)]
         background = photo.urls.raw
     }
+    console.log(background)
     var {width=300, height=300} = canvas;
     var X = canvas.width / 2;
     var Y = canvas.height / 2;
     var circle = await loadImage(avatar)
     var img = await loadImage(background)
-    var font_size = (canvas.width/2) / text.length;
-    if (font_size > 57){
-        font_size = 57
+    if(text.length > 20){
+        text = text.substr(0, 20) + "..."
     }
-	if (font_size < 33) {
-		font_size = 33;
+    var font_size = (canvas.width/2) / text.length;
+    if (font_size > 85){
+        font_size = 85
+    }
+	if (font_size < 70) {
+		font_size = 70;
 	}
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
     var R = 45;
@@ -57,13 +72,14 @@ async function buatPhoto(text, group, avatar, background, mime, opt={}){
 */
     ctxa.save()
     ctxa.beginPath();
-    ctxa.arc(X, Y-65, 115, 0, Math.PI * 2, false)
+    ctxa.arc(X, Y-87, 180, 0, Math.PI * 2, false)
     ctxa.stroke()
     ctxa.clip()
-    ctxa.drawImage(circle, X-127, Y-185, 250, 250)
+    ctxa.drawImage(circle, X-195, Y-270, 385, 385)
     ctxa.restore()
     ctx.fillStyle = opt.styleText||"white"
-    ctx.font = 'bold ' +font_size.toString()+ 'px "GroupText"'
+    console.log(font_size)
+    ctx.font = 'bold ' +(font_size).toString()+ 'px "forte"'
     ctx.textAlign = "center"
     let textnama = {
         width : (canvas.width / 2),
@@ -73,24 +89,21 @@ async function buatPhoto(text, group, avatar, background, mime, opt={}){
     if(text.length > 40){
         ini_bagi = font_size
     }
-    ctx.fillText(text, textnama.width, textnama.height - (ini_bagi/2));
-    ctx.font = 'bold 50px "DancingScript"'
+    ctx.fillText(text, textnama.width, textnama.height+(font_size/2)-10);
+    ctx.font = 'Bold Italic '+(50).toString()+'px "ComicSansMs"'
     ctx.fillStyle = opt.styleGroup||"white"
-    ctx.fillText(group,textnama.width, textnama.height+60)
+    ctx.fillText(group,textnama.width, textnama.height+(font_size)+text.length)
     if(opt.watermark){
         ctx.fillStyle = "white"
         var watermark = "©️"+(opt.watermark.text||"TaRianaBot")
         ctx.font = "23px \"DancingScript\""
         var tempat= {
-            width : canvas.width - (text.length*2)-100,
+            width : canvas.width -100,
             height : canvas.height - 20
         }
         //ctx.textAlign = "left"
         ctx.fillText(watermark, tempat.width, tempat.height)
     } 
-    ctx.globalAlpha = "0.4";
-    ctx.fillStyle = opt.styeBox||"#F0FFFF"
-    ctx.fillRect(((canvas.width/2)/2)+60, (canvas.height/2)+67, 567, 65);
     return canvas.toBuffer(mime)
   }
 
@@ -98,7 +111,7 @@ class canvasWelcome{
     constructor(text){
         this.image = false
         this.text = text
-        this.avatar = "https://i.ibb.co/GdXDDYT/upload-by-tembaksajabot.jpg"
+        this.avatar = __dirname+"/src/nn.jpg"
         this.group= ""
         this.opts = {}
     }
@@ -113,9 +126,6 @@ class canvasWelcome{
     }
     setGroup(text){
         this.group = text
-    }
-    setBoxStyle(style){
-        this.opts['styeBox'] = style
     }
     setWatermark(text){
         this.opts['watermark'] = {
