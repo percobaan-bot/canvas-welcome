@@ -11,7 +11,7 @@ Array.prototype.shuffle = function () {
     j = Math.floor(Math.random() * (i + 1));
     x = a[i]; a[i] = a[j]; a[j] = x; 
     }
-    return a; 
+    return a; ;
     }
 
 var fetchJSON = async (api, extra={})=>{
