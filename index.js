@@ -44,7 +44,6 @@ async function buatPhoto(text, group, avatar, background, mime, opt={}){
         var photo = photos[Math.floor(Math.random()*photos.length)]
         background = photo.urls.raw
     }
-    console.log(background)
     var {width=300, height=300} = canvas;
     var X = canvas.width / 2;
     var Y = canvas.height / 2;
@@ -78,7 +77,6 @@ async function buatPhoto(text, group, avatar, background, mime, opt={}){
     ctxa.drawImage(circle, X-195, Y-270, 385, 385)
     ctxa.restore()
     ctx.fillStyle = opt.styleText||"white"
-    console.log(font_size)
     ctx.font = 'bold ' +(font_size).toString()+ 'px "forte"'
     ctx.textAlign = "center"
     let textnama = {
